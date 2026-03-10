@@ -1,13 +1,19 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
-SRC = $(wildcard src/*.c)
-OBJ = $(SRC:.c=.o)
+
+SRC_DIR = src
+OBJ_DIR = obj
+
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
+
 TARGET = trek
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
-%.o: %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean install uninstall
@@ -30,4 +36,4 @@ uninstall:
 	@echo "Done! Run 'source ~/.bashrc' to apply changes."
 
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -rf $(OBJ_DIR) $(TARGET)
